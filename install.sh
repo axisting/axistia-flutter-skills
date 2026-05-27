@@ -1,19 +1,22 @@
 #!/bin/bash
 # axistia-flutter-skills installer
-# One-shot script that installs all skills into ~/.copilot/skills/ (VS Code Copilot)
-# and ~/.claude/skills/ (Claude Code), depending on which target is selected.
+# Installs all skills into:
+#   ~/.copilot/skills/        (VS Code Copilot)
+#   ~/.claude/skills/         (Claude Code)
+#   ~/.cursor/rules/          (Cursor — as .mdc files)
 #
 # Usage:
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=copilot
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=claude
-#   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=both
+#   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=cursor
+#   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=all
 
 set -e
 
 REPO_URL="https://github.com/axisting/axistia-flutter-skills.git"
 REPO_NAME="axistia-flutter-skills"
-TARGET="both"  # default
+TARGET="all"  # default: install everywhere
 
 for arg in "$@"; do
   case $arg in
@@ -81,6 +84,24 @@ install_copilot() {
   done
 }
 
+# Install for Cursor (global rules as .mdc files)
+install_cursor() {
+  CURSOR_DIR="$HOME/.cursor/rules"
+  mkdir -p "$CURSOR_DIR"
+  echo "[Cursor] Installing skills to $CURSOR_DIR"
+
+  for skill_dir in "$TMP_DIR/$REPO_NAME/skills"/*/; do
+    skill_name=$(basename "$skill_dir")
+    target_file="$CURSOR_DIR/$skill_name.mdc"
+    if [ -f "$target_file" ]; then
+      echo "  [Cursor] Updating $skill_name"
+    else
+      echo "  [Cursor] Installing $skill_name"
+    fi
+    cp "$skill_dir/SKILL.md" "$target_file"
+  done
+}
+
 # Install AGENTS.md to a known location
 install_agents() {
   AGENTS_DIR="$HOME/.axistia"
@@ -101,9 +122,13 @@ case $TARGET in
   claude)
     install_claude
     ;;
-  both|*)
+  cursor)
+    install_cursor
+    ;;
+  both|all|*)
     install_copilot
     install_claude
+    install_cursor
     ;;
 esac
 
@@ -123,7 +148,7 @@ done
 echo ""
 echo "Next steps:"
 echo ""
-echo "  1. Restart VS Code (and/or Claude Code) so it picks up the new skills."
+echo "  1. Restart VS Code, Cursor, and/or Claude Code so they pick up the new skills."
 echo ""
 echo "  2. Copy AGENTS.md to your project root (per project):"
 echo "       cp ~/.axistia/AGENTS.md /path/to/your/project/AGENTS.md"
@@ -132,6 +157,10 @@ echo "  3. Test by opening a Flutter project and asking:"
 echo "       'Detect this project's stack and tell me what skills you'd use.'"
 echo ""
 echo "  4. Update later by re-running this script."
+echo ""
+echo "  Cursor rules installed to: ~/.cursor/rules/"
+echo "  VS Code Copilot skills:     ~/.copilot/skills/"
+echo "  Claude Code skills:         ~/.claude/skills/"
 echo ""
 echo "Docs: https://github.com/axisting/axistia-flutter-skills"
 echo ""
