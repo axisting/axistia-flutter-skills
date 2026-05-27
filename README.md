@@ -42,6 +42,7 @@ After install, restart VS Code (and/or Claude Code) so the skills are picked up.
 | `flutter-store-review-checker` | Pre-submission audit for App Store + Play Store (privacy manifest, ATT, 4.8, 5.1.1) | "submit to App Store", "ready to publish" |
 | `flutter-security-audit` | OWASP Mobile Top 10 (2024) scan: secrets, network, storage, deps | "security audit", "before release" |
 | `flutter-package-version-checker` | Verifies dependencies are current, flags abandoned packages | "update packages", "pub outdated" |
+| `mobile-app-ui-design` | Designs high-quality mobile UI/UX screens, flows, and components | "design a screen", "app mockup", "mobile UI", "onboarding flow", "make this look better" |
 
 ## How They Work Together
 
