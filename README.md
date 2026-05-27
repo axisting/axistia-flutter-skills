@@ -164,10 +164,13 @@ If a skill doesn't trigger, the issue is usually that VS Code didn't pick up the
 
 ## Built By
 
-[Volkan Demir](https://axisting.com) (Axistia) for use across:
-- [Habit Score Tracker](https://habitscoretracker.com) (HST)
-- Livestock Manager
-- Kap Kurtar (yekurtar.axisting.com)
+[Volkan Demir](https://axisting.com) ([Axistia](https://axistia.org) ) for use across:
+- [Habit Score Tracker](https://habitscoretracker.axistia.org) (HST)
+- [Livestock Manager](https://livestockmanager.axistia.org)
+- Kap Kurtar
+- Meditai
+- Weara
+- Clendy
 - Future Axistia apps
 
 If you find these useful, a star on the repo is appreciated. If you spot bugs or want to suggest a new skill, open an issue.
