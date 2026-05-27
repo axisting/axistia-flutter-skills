@@ -4,7 +4,7 @@
 #   ~/.copilot/skills/                    (VS Code Copilot)
 #   ~/.claude/skills/                     (Claude Code)
 #   ~/.cursor/rules/                      (Cursor — as .mdc files)
-#   ~/.gemini/config/plugins/<skill>/     (Gemini CLI / Antigravity)
+#   ~/.gemini/config/plugins/axistia-flutter-skills/  (Gemini CLI / Antigravity)
 #
 # Usage:
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash
@@ -105,21 +105,40 @@ install_cursor() {
 }
 
 # Install for Gemini CLI / Antigravity (plugins directory)
+# Format: ~/.gemini/config/plugins/<plugin>/plugin.json + skills/<name_underscored>/SKILL.md
 install_gemini() {
   GEMINI_DIR="$HOME/.gemini/config/plugins"
-  mkdir -p "$GEMINI_DIR"
-  echo "[Gemini] Installing skills to $GEMINI_DIR"
+  PLUGIN_DIR="$GEMINI_DIR/axistia-flutter-skills"
+  SKILLS_DIR="$PLUGIN_DIR/skills"
 
+  mkdir -p "$SKILLS_DIR"
+  echo "[Gemini] Installing plugin to $PLUGIN_DIR"
+
+  # Write plugin.json
+  cat > "$PLUGIN_DIR/plugin.json" <<'EOF'
+{
+  "name": "axistia-flutter-skills",
+  "version": "1.0.0",
+  "description": "Production-ready Flutter skill set: auth, error handling, forms, pages, theming, l10n, IAP, security, store review, and more.",
+  "author": {
+    "name": "Axistia"
+  },
+  "license": "MIT"
+}
+EOF
+
+  # Write installed_version.json
+  echo '{"version": "1.0.0"}' > "$PLUGIN_DIR/installed_version.json"
+
+  # Copy each skill into skills/<name_with_underscores>/SKILL.md
   for skill_dir in "$TMP_DIR/$REPO_NAME/skills"/*/; do
     skill_name=$(basename "$skill_dir")
-    target_dir="$GEMINI_DIR/$skill_name"
-    if [ -d "$target_dir" ]; then
-      echo "  [Gemini] Updating $skill_name"
-      rm -rf "$target_dir"
-    else
-      echo "  [Gemini] Installing $skill_name"
-    fi
-    cp -r "$skill_dir" "$target_dir"
+    # Convert hyphens to underscores for directory name
+    skill_key="${skill_name//-/_}"
+    target_skill_dir="$SKILLS_DIR/$skill_key"
+    mkdir -p "$target_skill_dir"
+    cp "$skill_dir/SKILL.md" "$target_skill_dir/SKILL.md"
+    echo "  [Gemini] Installed $skill_name → skills/$skill_key/"
   done
 }
 
