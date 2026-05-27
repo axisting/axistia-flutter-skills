@@ -1,15 +1,17 @@
 #!/bin/bash
 # axistia-flutter-skills installer
 # Installs all skills into:
-#   ~/.copilot/skills/        (VS Code Copilot)
-#   ~/.claude/skills/         (Claude Code)
-#   ~/.cursor/rules/          (Cursor — as .mdc files)
+#   ~/.copilot/skills/                    (VS Code Copilot)
+#   ~/.claude/skills/                     (Claude Code)
+#   ~/.cursor/rules/                      (Cursor — as .mdc files)
+#   ~/.gemini/config/plugins/<skill>/     (Gemini CLI / Antigravity)
 #
 # Usage:
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=copilot
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=claude
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=cursor
+#   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=gemini
 #   curl -sSL https://raw.githubusercontent.com/axisting/axistia-flutter-skills/main/install.sh | bash -s -- --target=all
 
 set -e
@@ -102,6 +104,25 @@ install_cursor() {
   done
 }
 
+# Install for Gemini CLI / Antigravity (plugins directory)
+install_gemini() {
+  GEMINI_DIR="$HOME/.gemini/config/plugins"
+  mkdir -p "$GEMINI_DIR"
+  echo "[Gemini] Installing skills to $GEMINI_DIR"
+
+  for skill_dir in "$TMP_DIR/$REPO_NAME/skills"/*/; do
+    skill_name=$(basename "$skill_dir")
+    target_dir="$GEMINI_DIR/$skill_name"
+    if [ -d "$target_dir" ]; then
+      echo "  [Gemini] Updating $skill_name"
+      rm -rf "$target_dir"
+    else
+      echo "  [Gemini] Installing $skill_name"
+    fi
+    cp -r "$skill_dir" "$target_dir"
+  done
+}
+
 # Install AGENTS.md to a known location
 install_agents() {
   AGENTS_DIR="$HOME/.axistia"
@@ -125,10 +146,14 @@ case $TARGET in
   cursor)
     install_cursor
     ;;
+  gemini)
+    install_gemini
+    ;;
   both|all|*)
     install_copilot
     install_claude
     install_cursor
+    install_gemini
     ;;
 esac
 
@@ -148,7 +173,7 @@ done
 echo ""
 echo "Next steps:"
 echo ""
-echo "  1. Restart VS Code, Cursor, and/or Claude Code so they pick up the new skills."
+echo "  1. Restart VS Code, Cursor, Claude Code, and/or Gemini CLI so they pick up the new skills."
 echo ""
 echo "  2. Copy AGENTS.md to your project root (per project):"
 echo "       cp ~/.axistia/AGENTS.md /path/to/your/project/AGENTS.md"
@@ -158,9 +183,10 @@ echo "       'Detect this project's stack and tell me what skills you'd use.'"
 echo ""
 echo "  4. Update later by re-running this script."
 echo ""
-echo "  Cursor rules installed to: ~/.cursor/rules/"
 echo "  VS Code Copilot skills:     ~/.copilot/skills/"
 echo "  Claude Code skills:         ~/.claude/skills/"
+echo "  Cursor rules:               ~/.cursor/rules/"
+echo "  Gemini CLI plugins:         ~/.gemini/config/plugins/"
 echo ""
 echo "Docs: https://github.com/axisting/axistia-flutter-skills"
 echo ""
