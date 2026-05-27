@@ -218,4 +218,14 @@ If `google_sign_in` is in pubspec, `sign_in_with_apple` MUST also be in pubspec.
 - DO NOT call Supabase methods before `Supabase.initialize()` completes
 - DO NOT store Supabase keys in client without RLS policies on the backend
 - DO NOT skip RLS (Row Level Security) policies on Supabase tables, the anon key gives anyone read access otherwise
+
+## Auth Error Handling
+
+Supabase auth exceptions (`AuthException`, network failures, nonce mismatches) must be caught in the repository layer and mapped to domain `Failure` types before surfacing to the UI. Do not pass raw `AuthException.message` strings to users — they contain technical details.
+
+Consult `flutter-error-handling` for:
+- The `Failure` sealed class definition
+- How to map exceptions in the repository
+- How to display auth errors via `AsyncValue.when()` in Riverpod providers
+- When to use SnackBar vs inline error vs full-screen error for auth failures
 - DO NOT trust `auth.currentUser` synchronously, always wait for `onAuthStateChange` or use `getUser()` async call

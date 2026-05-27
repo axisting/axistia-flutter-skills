@@ -248,3 +248,12 @@ Auth logic NEVER goes inside widgets. Widgets call providers, providers call rep
 - Do NOT call `getAppleIDCredential` without a nonce (Firebase will reject the resulting token)
 - Do NOT assume Apple will send the user's name on every login (only the first)
 - Do NOT test Apple Sign-In on iOS Simulator, it does not work, use a real device
+## Auth Error Handling
+
+Auth exceptions (`invalid-credential`, `network-request-failed`, `too-many-requests`, `user-disabled`) must be caught in the repository layer and mapped to domain `Failure` types before surfacing to the UI. Do not pass raw `FirebaseAuthException` messages to users.
+
+Consult `flutter-error-handling` for:
+- The `Failure` sealed class definition
+- How to map exceptions in the repository
+- How to display auth errors via `AsyncValue.when()` in Riverpod providers
+- When to use SnackBar vs inline error vs full-screen error for auth failures

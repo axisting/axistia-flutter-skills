@@ -156,6 +156,8 @@ Never show a blank search screen. Include:
 
 ## Implementation Notes
 
+### React / HTML Prototype
+
 When building these designs as React artifacts or HTML:
 - Use Tailwind CSS utility classes for spacing, colors, and typography
 - Import Lucide React for clean, consistent iconography
@@ -165,5 +167,29 @@ When building these designs as React artifacts or HTML:
 - Mobile-first: design for 375px width (iPhone SE) as baseline
 - Use `rounded-2xl` or `rounded-3xl` for modern card aesthetics
 - Apply `backdrop-blur` for glassmorphism effects where appropriate
+
+### Flutter Implementation
+
+When the design is destined for a Flutter app (not a prototype), these rules override the React/HTML notes above:
+
+- **Colors**: Do NOT hardcode hex values inline. Map the 60/30/10 palette to `Theme.of(context).colorScheme.*` tokens. Consult `flutter-theme-aware` to translate the full color system into `ColorScheme.fromSeed` with surface/primary/secondary/tertiary slots.
+- **Typography**: Do NOT hardcode `TextStyle(fontSize: ...)`. Map to `Theme.of(context).textTheme.*` styles (e.g., `headlineMedium`, `bodyLarge`) with `.copyWith()` for one-off overrides. Consult `flutter-theme-aware` for the full type scale mapping.
+- **Spacing and padding**: The 8-point grid maps to `EdgeInsets` multiples of 8: `8, 16, 24, 32, 48`. Use `const EdgeInsets.all(16)`, not `EdgeInsets.all(15)`. Never mix arbitrary pixel values.
+- **Tap targets**: Minimum 44x44pt tap area. Use `InkWell` / `GestureDetector` wrapping a `SizedBox(height: 48)` at minimum, or use `FilledButton` / `ElevatedButton` which meet this by default.
+- **Glassmorphism / blur**: Use `BackdropFilter` + `ImageFilter.blur(sigmaX: 10, sigmaY: 10)` with a semi-transparent container.
+- **Responsive breakpoints**: mobile <600px, tablet 600-900px, desktop >900px. Consult `flutter-responsive-design` for `LayoutBuilder` and `MediaQuery` patterns.
+- **Animations**: Use Flutter's built-in `AnimatedContainer`, `AnimatedOpacity`, `Hero`, or `explicit AnimationController` — not CSS transitions.
+
+## Flutter Handoff
+
+When handing off a finished design to Flutter implementation, always state the following so sibling skills can map them directly to `ThemeData`:
+
+1. **Color tokens**: Dominant / accent / neutrals with exact hex values
+2. **Typography scale**: Font family, all sizes used, weights
+3. **Spacing tokens**: Base unit and all spacing steps used
+4. **Corner radius values**: card, button, chip, bottom sheet
+5. **Elevation / shadow definitions**
+
+Then activate `flutter-theme-aware` to translate the color system into `ColorScheme` tokens, and `flutter-responsive-design` for the 8-point grid and breakpoints.
 
 For deeper guidance on industry-specific conventions and emotional design patterns, read `references/industry-conventions.md`.

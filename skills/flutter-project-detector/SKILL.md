@@ -79,6 +79,7 @@ Based on detection, load only the skills that match. Do not load skills for stac
 | User handling errors, API failures, retry logic, or async error states | flutter-error-handling |
 | User asks "is this app ready to submit?" | flutter-store-review-checker |
 | User asks for security audit or before any release | flutter-security-audit |
+| User asks "are packages up to date?", `pub get` fails, outdated deps, or preparing for release | flutter-package-version-checker |
 | User says "let's start a new app" or no pubspec exists | flutter-new-project-starter |
 
 ### Step 4: State the detection out loud

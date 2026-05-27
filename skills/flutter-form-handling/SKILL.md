@@ -101,6 +101,8 @@ class EditProfileForm extends _$EditProfileForm {
 
 ## Complete Form Page
 
+> **Page structure note:** The surrounding page structure (`Scaffold`, `SafeArea`, `AppBar`, GoRouter route registration) is owned by `flutter-page-creation`. Apply that skill first to create the page wrapper, then embed the form notifier and `TextFormField`s from this skill inside it. The snippet below is a self-contained illustration only.
+
 ```dart
 class EditProfilePage extends ConsumerWidget {
   const EditProfilePage({super.key});

@@ -254,3 +254,14 @@ For Android Play Store:
 - DO NOT test on iOS Simulator, sandbox purchases require a real device for iOS 13 and earlier; even on newer iOS the experience differs
 - DO NOT assume `customerInfo.entitlements.all[X].isActive` is real-time, listen to `Purchases.addCustomerInfoUpdateListener` for updates
 - DO NOT hardcode subscription prices in the UI, fetch from Offering and display `package.storeProduct.priceString`
+
+## IAP Error Handling
+
+Purchase failures (network timeouts, billing errors, entitlement validation failures) must be mapped to domain `Failure` types before surfacing to the UI.
+
+**Critical special case:** `PurchasesErrorCode.purchaseCancelledError` is NOT an error. The user deliberately backed out of the purchase. Handle it silently (return false, show no SnackBar, log nothing to analytics as an error).
+
+For all other `PlatformException` codes from RevenueCat, consult `flutter-error-handling` for:
+- Wrapping `PlatformException` into `NetworkFailure`, `UnknownFailure`, etc.
+- SnackBar vs inline error vs full-screen error decision for purchase flows
+- Retry logic for transient network failures during entitlement fetch
