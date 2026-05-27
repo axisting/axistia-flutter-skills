@@ -26,6 +26,26 @@ Follow this sequence for any mobile screen:
 - What's the primary action on this screen?
 - What industry design conventions apply? (See `references/industry-conventions.md`)
 
+### Step 1.5: Live Reference Lookup *(Firecrawl MCP — optional but recommended)*
+
+If `firecrawl_scrape` or `firecrawl_search` tools are available in this session, pull fresh guidance from authoritative sources **before designing**. Skip this step if Firecrawl is not available — the embedded rules in this skill remain the baseline.
+
+| Source | URL pattern | What to extract |
+|--------|-------------|------------------|
+| Material Design 3 | `https://m3.material.io/components/<component>/overview` | Spacing specs, touch targets, states, motion |
+| Apple HIG | `https://developer.apple.com/design/human-interface-guidelines/<topic>` | iOS conventions, Safe Area, Dynamic Type, platform patterns |
+| Shopify Polaris | `https://polaris.shopify.com/components/<component>` | Mobile-adapted component patterns |
+| App Store competitor | `https://apps.apple.com/app/<id>` | Screenshot copy framing, feature positioning |
+
+**Workflow when Firecrawl is available:**
+1. Identify target platform (iOS / Android / both) from Step 1
+2. **iOS-specific component** → scrape the relevant HIG page (e.g., `https://developer.apple.com/design/human-interface-guidelines/navigation-bars`)
+3. **Android / cross-platform component** → scrape the relevant M3 page (e.g., `https://m3.material.io/components/navigation-bar/overview`)
+4. Extract: minimum touch target sizes, spacing tokens, accessibility requirements, platform-specific interaction patterns
+5. Reconcile with embedded rules below — if live spec conflicts, prefer the live spec and note the difference
+
+**Do NOT scrape** Dribbble, Behance, or Mobbin — they are image-only and return no useful structured content.
+
 ### Step 2: Structure First (UX Lens)
 - Map the user flow: what screen comes before and after?
 - Identify the MVP elements — only what's essential for this screen
